@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Transaction {
+  id                 String            @id @default(cuid())
+  order_id           String            @unique
+  gross_amount       Int
+  customer_name      String
+  customer_email     String
+  method             String
+  raw_response       Json?
+  transaction_status TransactionStatus @default(PENDING)
+  midtrans_status    MidtransStatus    @default(pending)
+  created_at         DateTime          @default(now())
+  updated_at         DateTime          @default(now()) @updatedAt
+}
+
+enum TransactionStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+enum MidtransStatus {
+  capture
+  settlement
+  pending
+  deny
+  cancel
+  expire
+  failure
+  refund
+}
