@@ -4,15 +4,17 @@ import { fail, type Actions } from '@sveltejs/kit';
 export const actions: Actions = {
 	default: async ({ request, fetch }) => {
 		try {
-			const { customer_name, customer_email, amount } = Object.fromEntries(
+			const { customer_name, customer_email, amount, donation_type } = Object.fromEntries(
 				await request.formData()
 			);
 			const order_id = crypto.randomUUID();
+			const newAmount = amount ? amount : donation_type;
+
 
 			// Create Donation
 			const response = await fetch('/api/midtrans/request', {
 				method: 'POST',
-				body: JSON.stringify({ customer_name, customer_email, amount, order_id })
+				body: JSON.stringify({ customer_name, customer_email, amount: newAmount, order_id })
 			});
 			const data = await response.json();
 
@@ -21,20 +23,19 @@ export const actions: Actions = {
 				data: {
 					customer_name: (customer_name as string) || 'Hamba Allah',
 					customer_email: customer_email as string,
-					gross_amount: parseInt(amount as string),
+					gross_amount: parseInt(newAmount as string),
 					method: 'QRIS',
 					order_id
 				}
 			});
 
 			return {
-				message: 'Midtrans request successful',
+				message: 'Pembayaran QRIS telah di-generate. Silakan scan QRIS untuk melanjutkan.',
 				url: data.data?.redirect_url || ''
 			};
 		} catch (e) {
-			console.error('Error in default action:', e);
 			return fail(500, {
-				message: 'Internal Server Error',
+				message: 'Pembayaran QRIS gagal di-generate. Silakan coba lagi.',
 				error: e instanceof Error ? e.message : 'Unknown error'
 			});
 		}

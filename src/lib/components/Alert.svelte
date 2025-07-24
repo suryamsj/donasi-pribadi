@@ -4,48 +4,65 @@
 	function getAlertClass(type: string): string {
 		switch (type) {
 			case 'success':
-				return 'bg-green-100 text-green-800';
+				return 'bg-emerald-50 border-emerald-200 text-emerald-800';
 			case 'error':
-				return 'bg-red-100 text-red-800';
+				return 'bg-red-50 border-red-200 text-red-800';
 			default:
-				return '';
+				return 'bg-slate-50 border-slate-200 text-slate-800';
+		}
+	}
+
+	function getIconClass(type: string): string {
+		switch (type) {
+			case 'success':
+				return 'text-emerald-600';
+			case 'error':
+				return 'text-red-600';
+			default:
+				return 'text-slate-600';
 		}
 	}
 </script>
 
-<div class="w-full p-4 {getAlertClass(type)}">
-	<div class="flex items-center">
+<div class="w-full rounded-xl border p-4 shadow-sm {getAlertClass(type)}">
+	<div class="flex items-center space-x-3">
 		{#if type === 'success'}
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-6 w-6 text-green-600"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
+			<div class="flex-shrink-0">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-5 w-5 {getIconClass(type)}"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
 					stroke-width="2"
-					d="M9 12l2 2 4-4m5.293-1.293a1 1 0 00-1.414-1.414l-7.586 7.586a1 1 0 01-1.414 0L3.707 12.707a1 1 0 00-1.414 1.414l3.586 3.586a3 3 0 004.243 0l8.586-8.586z"
-				/>
-			</svg>
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+					/>
+				</svg>
+			</div>
 		{:else if type === 'error'}
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-6 w-6 text-red-600"
-				fill="none"
-				viewBox="0 0 24 24"
-				stroke="currentColor"
-			>
-				<path
-					stroke-linecap="round"
-					stroke-linejoin="round"
+			<div class="flex-shrink-0">
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					class="h-5 w-5 {getIconClass(type)}"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
 					stroke-width="2"
-					d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-				/>
-			</svg>
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+					/>
+				</svg>
+			</div>
 		{/if}
-		<span class="ml-2">{message}</span>
+		<div class="flex-1">
+			<p class="text-sm font-medium">{message}</p>
+		</div>
 	</div>
 </div>
