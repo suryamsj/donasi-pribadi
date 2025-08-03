@@ -13,7 +13,6 @@ export const load: PageServerLoad = async () => {
       transactions
     }
   } catch (e) {
-    console.log(e);
-    error(500, 'Internal Server Error');
+    error(500, (e as Error).message);
   }
 };

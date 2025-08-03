@@ -49,7 +49,6 @@ export const POST: RequestHandler = async ({ request }) => {
 			{ status: 200 }
 		);
 	} catch (e) {
-		console.error('Error processing webhook:', e);
-		return json({ message: 'Internal Server Error' }, { status: 500 });
+		return json({ message: 'Internal Server Error', error: (e as Error).message }, { status: 500 });
 	}
 };

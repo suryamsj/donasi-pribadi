@@ -1,5 +1,7 @@
 import prisma from '$lib/db';
+import { donationSchema } from '$lib/validation/donation.schema';
 import { fail, type Actions } from '@sveltejs/kit';
+import z from 'zod';
 
 export const actions: Actions = {
 	default: async ({ request, fetch }) => {
@@ -9,6 +11,31 @@ export const actions: Actions = {
 			);
 			const order_id = crypto.randomUUID();
 			const newAmount = amount ? amount : donation_type;
+
+			// Validate Input
+			const validation = donationSchema.safeParse({
+				name: customer_name,
+				email: customer_email,
+				amount: Number(newAmount)
+			})
+
+			if(!validation.success){
+				const flatError = z.flattenError(validation.error);
+
+				// Get Error
+				const emailError = flatError.fieldErrors?.email?.join(', ');
+				const nameError = flatError.fieldErrors?.name?.join(', ');
+				const amountError = flatError.fieldErrors?.amount?.join(', ');
+
+				return fail(400, {
+					message: 'Perhatikan inputan Anda!',
+					errors: {
+						email: emailError,
+						name: nameError,
+						amount: amountError
+					}
+				})
+			}
 
 
 			// Create Donation

@@ -3,6 +3,8 @@
 	import Alert from '$lib/components/Alert.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
+	let { form } = $props();
+
 	let isLoading = $state(false);
 	let showAlert = $state({
 		show: false,
@@ -79,9 +81,13 @@
 						class="w-full rounded-xl border border-slate-200 px-4 py-3 placeholder-slate-400 transition-colors focus:border-slate-400 focus:ring-0"
 						placeholder="Masukkan nama Anda"
 					/>
-					<p class="text-xs text-slate-500">
-						Opsional. Jika kosong, akan ditampilkan sebagai "Hamba Allah"
-					</p>
+					{#if form?.errors?.name}
+						<p class="text-xs text-red-500">{form.errors.name}</p>
+					{:else}
+						<p class="text-xs text-slate-500">
+							Opsional. Jika kosong, akan ditampilkan sebagai "Hamba Allah"
+						</p>
+					{/if}
 				</div>
 
 				<!-- Email -->
@@ -93,8 +99,10 @@
 						id="email"
 						class="w-full rounded-xl border border-slate-200 px-4 py-3 placeholder-slate-400 transition-colors focus:border-slate-400 focus:ring-0"
 						placeholder="Masukkan email Anda"
-						required
 					/>
+					{#if form?.errors?.email}
+						<p class="text-xs text-red-500">{form.errors.email}</p>
+					{/if}
 				</div>
 
 				<!-- Jumlah Donasi -->
@@ -165,14 +173,19 @@
 						{/if}
 					</div>
 
-					<p class="pt-2 text-center text-xs text-slate-500">
-						Minimum Rp 10.000 • Maksimum Rp 1.000.000
-					</p>
+					<!-- Error Message -->
+					{#if form?.errors?.amount}
+						<p class="pt-2 text-xs text-red-500">{form.errors.amount}</p>
+					{:else}
+						<p class="pt-2 text-center text-xs text-slate-500">
+							Minimum Rp 10.000 • Maksimum Rp 1.000.000
+						</p>
+					{/if}
 				</div>
 
 				<!-- Submit Button -->
 				<button
-					class="w-full rounded-xl bg-slate-800 px-6 py-4 font-medium text-white transition-colors hover:bg-slate-900 disabled:cursor-not-allowed disabled:bg-slate-400"
+					class="w-full cursor-pointer rounded-xl bg-slate-800 px-6 py-4 font-medium text-white transition-colors hover:bg-slate-900 disabled:cursor-not-allowed disabled:bg-slate-400"
 					type="submit"
 					disabled={isLoading}
 				>

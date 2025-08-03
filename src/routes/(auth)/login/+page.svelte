@@ -3,6 +3,7 @@
 	import Alert from '$lib/components/Alert.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
+	let { form } = $props();
 	let isLoading = $state(false);
 	let showAlert = $state({
 		show: false,
@@ -72,9 +73,11 @@
 						id="username"
 						class="w-full rounded-xl border border-slate-200 px-4 py-3 placeholder-slate-400 transition-colors focus:border-slate-400 focus:ring-0"
 						placeholder="Masukkan username"
-						required
 						autocomplete="username"
 					/>
+					{#if form?.errors?.username}
+						<p class="text-sm text-red-500">{form.errors.username}</p>
+					{/if}
 				</div>
 
 				<!-- Password -->
@@ -87,7 +90,6 @@
 							id="password"
 							class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 placeholder-slate-400 transition-colors focus:border-slate-400 focus:ring-0"
 							placeholder="Masukkan password"
-							required
 							autocomplete="current-password"
 						/>
 						<button
@@ -121,6 +123,9 @@
 								</svg>
 							{/if}
 						</button>
+						{#if form?.errors?.password}
+							<p class="text-sm text-red-500">{form.errors.password}</p>
+						{/if}
 					</div>
 				</div>
 

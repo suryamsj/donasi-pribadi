@@ -1,5 +1,5 @@
 import { dev } from '$app/environment';
-import { MIDTRANS_DEV_URL, MIDTRANS_PROD_URL, MIDTRANS_SERVER_KEY } from '$env/static/private';
+import { DEV_URL, MIDTRANS_DEV_URL, MIDTRANS_SERVER_KEY, PROD_URL } from '$env/static/private';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -22,10 +22,19 @@ export const POST: RequestHandler = async ({ request }) => {
 				first_name: body.customer_name || 'Hamba Allah',
 				email: body.customer_email
 			},
-			enabled_payments: ['gopay', 'shopeepay', 'other_qris']
+			enabled_payments: ['gopay', 'shopeepay', 'other_qris'],
+			callbacks: {
+				finish: dev ? `${DEV_URL}/notifikasi` : `${PROD_URL}/notifikasi`,
+				error: dev ? `${DEV_URL}/notifikasi` : `${PROD_URL}/notifikasi`
+			}
 		};
-		const url = dev ? MIDTRANS_DEV_URL : MIDTRANS_PROD_URL;
-		const response = await fetch(url, {
+
+
+		/**
+		 * Midtrans API
+		 * JIKA PRODUCTION, GANTI MIDTRANS_DEV_URL DENGAN MIDTRANS_PROD_URL
+		 */
+		const response = await fetch(MIDTRANS_DEV_URL, {
 			method: 'POST',
 			headers: {
 				Accept: 'application/json',
@@ -37,7 +46,6 @@ export const POST: RequestHandler = async ({ request }) => {
 		const data = await response.json();
 		return json({ message: 'Berhasil', data }, { status: 200 });
 	} catch (e) {
-		console.error('Error processing request:', e);
-		return json({ message: 'Internal Server Error' }, { status: 500 });
+		return json({ message: 'Internal Server Error', error: (e as Error).message }, { status: 500 });
 	}
 };

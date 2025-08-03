@@ -3,6 +3,7 @@
 	import Alert from '$lib/components/Alert.svelte';
 	import type { SubmitFunction } from '@sveltejs/kit';
 
+	let { form } = $props();
 	let isLoading = $state(false);
 	let showAlert = $state({
 		show: false,
@@ -41,11 +42,6 @@
 	function toggleConfirmPassword() {
 		showConfirmPassword = !showConfirmPassword;
 	}
-
-	// Password validation
-	let passwordsMatch = $derived(password === confirmPassword);
-	let passwordValid = $derived(password.length >= 6);
-	let formValid = $derived(passwordValid && passwordsMatch && password && confirmPassword);
 </script>
 
 <svelte:head>
@@ -81,9 +77,13 @@
 						id="name"
 						class="w-full rounded-xl border border-slate-200 px-4 py-3 placeholder-slate-400 transition-colors focus:border-slate-400 focus:ring-0"
 						placeholder="Masukkan nama lengkap"
-						required
 						autocomplete="name"
 					/>
+					{#if form?.errors?.name}
+						<p class="text-xs text-red-500">{form?.errors?.name}</p>
+					{:else}
+						<p class="text-xs text-slate-500">Nama harus diisi</p>
+					{/if}
 				</div>
 
 				<!-- Username -->
@@ -95,13 +95,16 @@
 						id="username"
 						class="w-full rounded-xl border border-slate-200 px-4 py-3 placeholder-slate-400 transition-colors focus:border-slate-400 focus:ring-0"
 						placeholder="Masukkan username"
-						required
 						autocomplete="username"
 						minlength="3"
 					/>
-					<p class="text-xs text-slate-500">
-						Minimal 3 karakter, hanya huruf, angka, dan underscore
-					</p>
+					{#if form?.errors?.username}
+						<p class="text-xs text-red-500">{form?.errors?.username}</p>
+					{:else}
+						<p class="text-xs text-slate-500">
+							Minimal 3 karakter, hanya huruf, angka, dan underscore
+						</p>
+					{/if}
 				</div>
 
 				<!-- Password -->
@@ -113,12 +116,9 @@
 							name="password"
 							id="password"
 							bind:value={password}
-							class="w-full rounded-xl border px-4 py-3 pr-12 placeholder-slate-400 transition-colors
-								{passwordValid || !password
-								? 'border-slate-200 focus:border-slate-400'
-								: 'border-red-300 focus:border-red-400'}"
+							class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 placeholder-slate-400
+								transition-colors focus:border-slate-400"
 							placeholder="Masukkan password"
-							required
 							autocomplete="new-password"
 							minlength="6"
 						/>
@@ -154,8 +154,8 @@
 							{/if}
 						</button>
 					</div>
-					{#if password && !passwordValid}
-						<p class="text-xs text-red-600">Password minimal 6 karakter</p>
+					{#if form?.errors?.password}
+						<p class="text-xs text-red-500">{form?.errors?.password}</p>
 					{:else}
 						<p class="text-xs text-slate-500">Minimal 6 karakter</p>
 					{/if}
@@ -172,12 +172,9 @@
 							name="confirmPassword"
 							id="confirmPassword"
 							bind:value={confirmPassword}
-							class="w-full rounded-xl border px-4 py-3 pr-12 placeholder-slate-400 transition-colors
-								{passwordsMatch || !confirmPassword
-								? 'border-slate-200 focus:border-slate-400'
-								: 'border-red-300 focus:border-red-400'}"
+							class="w-full rounded-xl border border-slate-200 px-4 py-3 pr-12 placeholder-slate-400
+								transition-colors focus:border-slate-400"
 							placeholder="Konfirmasi password"
-							required
 							autocomplete="new-password"
 						/>
 						<button
@@ -212,21 +209,21 @@
 							{/if}
 						</button>
 					</div>
-					{#if confirmPassword && !passwordsMatch}
-						<p class="text-xs text-red-600">Password tidak cocok</p>
-					{:else if confirmPassword && passwordsMatch}
-						<p class="text-xs text-emerald-600">Password cocok</p>
+					{#if form?.errors?.confirmPassword}
+						<p class="text-xs text-red-500">{form?.errors?.confirmPassword}</p>
+					{:else}
+						<p class="text-xs text-slate-500">Konfirmasi password harus sama dengan password</p>
 					{/if}
 				</div>
 
 				<!-- Submit Button -->
 				<button
 					class="w-full rounded-xl px-6 py-4 font-medium transition-colors disabled:cursor-not-allowed
-						{formValid && !isLoading
+						{!isLoading
 						? 'bg-slate-800 text-white hover:bg-slate-900'
 						: 'cursor-not-allowed bg-slate-300 text-slate-500'}"
 					type="submit"
-					disabled={!formValid || isLoading}
+					disabled={isLoading}
 				>
 					{#if isLoading}
 						<div class="flex items-center justify-center space-x-2">
@@ -240,19 +237,6 @@
 					{/if}
 				</button>
 			</form>
-
-			<!-- Login Link -->
-			<div class="mt-6 text-center">
-				<p class="text-sm text-slate-600">
-					Sudah punya akun?
-					<a
-						href="/login"
-						class="font-medium text-slate-800 transition-colors hover:text-slate-900"
-					>
-						Masuk di sini
-					</a>
-				</p>
-			</div>
 		</div>
 
 		<!-- Footer -->
