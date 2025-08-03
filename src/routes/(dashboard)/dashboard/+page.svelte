@@ -106,9 +106,30 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-6">
 	<div class="mx-auto max-w-7xl">
 		<!-- Header -->
-		<div class="mb-8">
-			<h1 class="mb-2 text-3xl font-light text-slate-800">Dashboard Donasi</h1>
-			<p class="text-slate-600">Kelola dan pantau transaksi donasi</p>
+		<div class="mb-8 flex items-start justify-between">
+			<div>
+				<h1 class="mb-2 text-3xl font-light text-slate-800">Dashboard Donasi</h1>
+				<p class="text-slate-600">Kelola dan pantau transaksi donasi</p>
+			</div>
+			<a
+				href="/logout"
+				class="inline-flex items-center gap-2 rounded-xl border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-50 hover:border-red-300"
+			>
+				<svg
+					class="h-4 w-4"
+					fill="none"
+					stroke="currentColor"
+					viewBox="0 0 24 24"
+				>
+					<path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+					></path>
+				</svg>
+				Logout
+			</a>
 		</div>
 
 		<!-- Statistics Cards -->
