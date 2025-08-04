@@ -1,4 +1,6 @@
+import { PUSHER_CHANNEL } from '$env/static/private';
 import prisma from '$lib/db';
+import { pusher } from '$lib/server/pusher';
 import { json, type RequestHandler } from '@sveltejs/kit';
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -15,6 +17,12 @@ export const POST: RequestHandler = async ({ request }) => {
 					raw_response: transaction
 				}
 			});
+
+			// Trigger Pusher
+			pusher.trigger(PUSHER_CHANNEL, 'notification', {
+				message: 'Ada donasi baru nih!',
+				amount: transaction.gross_amount
+			})
 		} else if (
 			transaction.transaction_status === 'cancel' ||
 			transaction.transaction_status === 'expire' ||

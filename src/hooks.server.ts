@@ -9,8 +9,7 @@ export const handle: Handle = async ({ event, resolve }) => {
     try {
       const payload = verifyToken(token);
       event.locals.user = payload;
-    } catch (e) {
-      console.log((e as Error).message);
+    } catch {
       event.locals.user = {
         id: '',
         username: '',
